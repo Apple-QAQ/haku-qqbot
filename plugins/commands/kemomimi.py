@@ -7,5 +7,5 @@ def run(message):
         meg.replace(" ", "")
     if meg != '':
         return '→ 猫猫认为.loli不需要跟随参数的说~'
-    return f'[CQ:image,file={url},cache=0]' \
+    return f'[CQ:image,file={url},cache=0]\n' \
            f'→ 感谢@拉菲艾拉La_Pluma 的api!'
