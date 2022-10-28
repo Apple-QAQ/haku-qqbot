@@ -22,7 +22,7 @@ def __search_ubuntu(keywords):
     try:
         res = requests.get(url=baseurl+searchurl, params=params, timeout=20)
     except requests.exceptions.ReadTimeout:
-        return 'Search timeout.'
+        return '呜呜呜，查询超时了，一定不是猫猫的错！请再试试看~'
 
     if res.status_code == 200:
         restexts = res.text.split()
@@ -65,19 +65,26 @@ def __search_ubuntu(keywords):
                         'description': des,
                         'version': ver,
                     })
-            result = search_res['package']
+            result = "猫猫找到了" + search_res['package'].replace("Package ", "包名为'") + "'的信息\n"
             for ln in search_res['links']:
-                result += f"\n{ln['distribution']}:\n{ln['description']}\n{ln['version']}\n{ln['link']}"
-            return result
+                result += f"\n{ln['distribution']}:\n" \
+                          f"-----------------简介-----------------\n" \
+                          f"{ln['description']}\n" \
+                          f"--------------------------------------\n" \
+                          f"架构与版本号:\n" \
+                          f"{ln['version']}\n" \
+                          f"链接:\n" \
+                          f"{ln['link']}\n"
+                return result
         else:
-            return 'No search result.'
+            return "→ 坏坏诶！猫猫没有找到你说的包！呜呜呜~"
     else:
-        return 'Cannot connect ubuntu.com'
+        return '→ 啊咧~是服务器炸了，不关猫猫的事！'
 
 
 def run(message: Message) -> str:
     req = list(message.raw_message.strip().split(' ', 1))
-    help_msg = 'Ubuntu 包查询'
+    help_msg = ':: Ubuntu 包查询'
     if len(req) > 1:
         keywords = req[1].strip()
         return __search_ubuntu(keywords)

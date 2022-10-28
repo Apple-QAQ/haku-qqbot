@@ -1,4 +1,6 @@
-
+"""
+定时任务
+"""
 from handlers.message import Message
 from handlers.schedule import Schedule
 
@@ -7,9 +9,9 @@ def run(message: Message):
     cmd = message.message.split()
     help_msg = '设置定时任务\n' \
                '用法：\n' \
-               '    commands add <interval> <command>\n' \
-               '    commands list\n' \
-               '    commands del <index>'
+               '    .commands add <interval> <command>\n' \
+               '    .commands list\n' \
+               '    .commands del <index>'
 
     ans = help_msg
     cmd_len = len(cmd)
@@ -19,7 +21,7 @@ def run(message: Message):
     elif message.is_private_message():
         qid = message.user_id
     else:
-        return '只支持群和好友私聊'
+        return '喵呜~只支持群和好友私聊~'
 
     if cmd_len == 2:
         if cmd[1] == 'list':
@@ -30,18 +32,18 @@ def run(message: Message):
                 ans += f'\n{i+1} {lst[i]["command"]} {lst[i]["interval"]} {lst[i].get("user_id", "")}'
                 is_empty = False
             if is_empty:
-                ans = '没有命令被设置'
+                ans = '嘛~没有命令被设置呢~'
     elif cmd_len == 3:
         if cmd[1] == 'del':
             try:
                 index = int(cmd[2])
             except:
-                ans = 'del 需要数字一个下标'
+                ans = '大笨蛋！del 需要数字一个下标！'
             else:
                 if schedule.commands_del(message.message_type, qid, index):
-                    ans = '删除成功'
+                    ans = '删除成功！'
                 else:
-                    ans = '删除失败'
+                    ans = '唔……删除失败惹……'
     elif cmd_len >= 4:
         if cmd[1] == 'add':
             try:
@@ -49,12 +51,12 @@ def run(message: Message):
                 if interval == 0:
                     interval = 1
             except:
-                ans = 'add 需要一个数字间隔秒数'
+                ans = '嘛~add 需要一个数字间隔秒数的说~'
             else:
                 r_cmd = message.message.split(maxsplit=3)
                 if schedule.commands_add(message.message_type, message.user_id, message.group_id, r_cmd[3], interval):
-                    ans = f'添加成功 {interval}秒 {r_cmd[3]}'
+                    ans = f'添加成功！\n间隔{interval}分钟 命令:{r_cmd[3]}'
                 else:
-                    ans = '添加失败'
+                    ans = '喵呜……添加失败惹'
 
     return ans

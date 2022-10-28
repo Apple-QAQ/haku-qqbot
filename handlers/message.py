@@ -36,31 +36,75 @@
             将会调用插件的 bye() 方法（如果存在）
             dead_lock 参数默认为 False ，如果为 True 则会在之后阻止 reload 方法的调用，这个功能用于在停止时服务使用
 """
-import re
+
+import html
 import importlib
+import json
+import re
 import threading
+import time
 import types
 from typing import Dict, List, Tuple
 
+import yaml
+
 import api.gocqhttp
+import data.json
+import data.log
 import haku.config
 import haku.report
-import data.log
-import data.json
 
 plugin_err_code = -1
 plugin_success_code = 0
 plugin_block_code = 1
+
+_MESSAGE_BLOCK_DEFAULT_CONFIG = {
+    "black_group": [],
+    "bilibili_catch_black_group": [],
+}
+
+
+def _load_block_default_config():
+    try:
+        with open("files/block_config.yaml", "r") as config_file:
+            return yaml.load(config_file.read(), Loader=yaml.Loader)
+    except FileNotFoundError:
+        with open("files/block_config.yaml", "x") as config_file:
+            yaml.dump(_MESSAGE_BLOCK_DEFAULT_CONFIG, config_file)
+            data.log.get_logger().debug("未找到 files/block_config.yaml，完成创建，请根据实际情况填写")
+        with open("files/block_config.yaml", "r") as config_file:
+            return yaml.load(config_file.read(), Loader=yaml.Loader)
+
+
+###############
+
+
+def extract_json(s: str):
+    __i = s.index('{')
+    __count = 1  # 当前所在嵌套深度，即还没闭合的'{'个数
+    __j = 0
+    for __j, __c in enumerate(s[__i + 1:], start=__i + 1):
+        if __c == '}':
+            __count -= 1
+        elif __c == '{':
+            __count += 1
+        if __count == 0:
+            break
+    assert (__count == 0)  # 检查是否找到最后一个'}'
+    return s[__i:__j + 1]
+
+
+###############
 
 
 class Message:
     """
     消息类
     """
-
     # 嗯这些就是为了复读！
     __group_msg_cache_1 = {}
     __group_msg_cache_2 = {}
+
     # 特定消息不处理
     __block_msg = [
         '[视频]你的QQ暂不支持查看视频短片，请升级到最新版本后查看。',
@@ -102,68 +146,198 @@ class Message:
         """
         处理消息 判断插件调用 获取插件回复
         """
+
         if self.message in self.__block_msg:
             return
 
         # 判断复读！
         repeat = False
+        black_group = _load_block_default_config()["black_group"]
+        data.log.get_logger().info(f"black_group: {black_group}")
+        bilibili_catch_black_group = _load_block_default_config()["bilibili_catch_black_group"]
+        data.log.get_logger().info(f"bilibili_catch_black_group: {bilibili_catch_black_group}")
+
         if not self.inter_msg:
-            if self.is_group_message():
+            # 判断是否调用插件
+            call_plugin = False
+            plugin_name = ''
+            try:
+                index = haku.config.Config().get_index()
+                message_sequence = self.message.split()
+                plugin_name_judge = r'^[_A-Za-z]+$'.format(index)
+                if len(message_sequence) <= 0 or len(message_sequence[0]) <= 0:
+                    return
+                com = re.compile(plugin_name_judge)
+                index_len = len(index)
+                if self.is_group_message() and self.group_id in black_group and self.user_id != \
+                        haku.config.Config().get_admin_qq_list()[0]:
+                    call_plugin = False
+                elif com.match(message_sequence[0][index_len:]) is not None and \
+                        message_sequence[0][:index_len] == index:
+                    plugin_name = message_sequence[0][1:]
+                    call_plugin = True
+            except Exception as e:
+                data.log.get_logger().exception(f'RuntimeError while checking message: {e}')
+
+            if self.is_private_message():
+                # 调用插件
+                if call_plugin:
+                    self.can_call = True
+                    plugin = Plugin(plugin_name, self)
+                    code, self.reply = plugin.handle()
+
+            elif self.is_group_message() and (
+                    self.group_id not in black_group or self.user_id == haku.config.Config().get_admin_qq_list()[0]):
                 new_cache = {'msg': self.message, 'id': self.user_id, 'time': self.time}
+
                 if self.group_id in self.__group_msg_cache_1.keys():
                     cached = self.__group_msg_cache_1[self.group_id]
+
                     if self.message == cached['msg'] and self.self_id == cached['id']:
                         # 已经复读过了
                         pass
+
                     else:
                         self.__group_msg_cache_2[self.group_id] = cached
-                        if self.user_id != cached['id'] \
-                                and self.message == cached['msg'] and self.time - cached['time'] < 60:
-                            # 相同 id 和超过时效 60s 的都不复读
-                            # 将缓存消息的 qq id 改为 bot 自身 表示已经复读过了
-                            new_cache['id'] = self.self_id
+                        if self.message == cached['msg'] and self.time - cached['time'] < 60:
+                            # 超过时效 60s 的都不复读
+                            if self.user_id == cached['id']:  # 如果是同一个人发送
+                                new_cache['id'] = self.user_id
+                            else:
+                                # 将缓存消息的 qq id 改为 bot 自身 表示已经复读过了
+                                new_cache['id'] = self.self_id
                             repeat = True
                         self.__group_msg_cache_1[self.group_id] = new_cache
+
                 else:
                     self.__group_msg_cache_1[self.group_id] = new_cache
 
-        # 判断是否调用插件
-        call_plugin = False
-        plugin_name = ''
-        try:
-            index = haku.config.Config().get_index()
-            message_sequence = self.message.split()
-            plugin_name_judge = r'^[_A-Za-z]+$'.format(index)
-            if len(message_sequence) <= 0 or len(message_sequence[0]) <= 0:
-                return
-            com = re.compile(plugin_name_judge)
-            index_len = len(index)
-            if com.match(message_sequence[0][index_len:]) is not None and message_sequence[0][:index_len] == index:
-                plugin_name = message_sequence[0][1:]
-                call_plugin = True
-        except Exception as e:
-            data.log.get_logger().exception(f'RuntimeError while checking message: {e}')
+                # 调用插件
+                if call_plugin:
+                    self.can_call = True
+                    plugin = Plugin(plugin_name, self)
+                    code, self.reply = plugin.handle()
+                    # 调用插件则不可能复读
+                    if code == plugin_success_code:
+                        repeat = False
+                ###################################################
+                if self.group_id not in bilibili_catch_black_group:
+                    message = self.message.replace("\\/", "/")
+                    if "https://b23.tv/" in html.unescape(message):
+                        bvid = ""
+                        try:
+                            from plugins.commands import bilibili
+                            where_is_b23 = re.search(r'(https://b23.tv/?[a-zA-Z\d]*)', message).group()
+                            bvid = bilibili.b23tv_to_bv(where_is_b23)
+                            ret = bilibili.GetVideo("BV", bvid).useful_get_info()
+                            api.gocqhttp.send_group_msg(self.group_id, ret)
+                        except Exception as e:
+                            data.log.get_logger().error(f"\n{bvid}\n{e}")
+                ###################################################
+                if "{" in self.message and "}" in self.message and ":" in self.message:
+                    __blacklist = [
+                        '"QQ小"',
+                        '"app"'
+                    ]
+                    for __i in __blacklist:
+                        if __i in self.message:
+                            break
+                    else:
+                        try:
+                            __message = extract_json(html.unescape(self.message))
 
-        # 调用插件
-        if call_plugin:
-            self.can_call = True
-            plugin = Plugin(plugin_name, self)
-            code, self.reply = plugin.handle()
-            # 调用插件则不可能复读
-            if code == plugin_success_code:
-                repeat = False
+                            data.log.get_logger().info(__message)
+                            __ret = str(json.dumps(json.loads(__message), indent=2, ensure_ascii=False))
 
-        # 复读！
-        if repeat:
-            api.gocqhttp.send_group_msg(self.group_id, self.message)
+                            api.gocqhttp.send_group_msg(self.group_id, f"检测到json，格式化输出如下:\n\n{__ret}")
+                        except Exception as e:
+                            data.log.get_logger().error(e)
+                elif f"[CQ:at,qq={api.gocqhttp.get_login_info()[1]['data']['user_id']}]" in self.message and \
+                        "[CQ:reply,id=" not in self.message:
+                    api.gocqhttp.send_group_msg(self.group_id,
+                                                f"[CQ:at,qq={haku.config.Config().get_admin_qq_list()[0]}]\n"
+                                                f"嘛……如果想要看用法的的话就直接.help捏~")
+                elif "早" == self.message:
+                    now_time = time.localtime()
+                    try:
+                        with open(f"files/commands/good-morning.json", "r") as file:
+                            read = json.loads(file.read())
+                            data.log.get_logger().info(f"读取成功！info: {read}")
+                    except Exception as e:
+                        with open(f"files/commands/good-morning.json", "w") as file:
+                            file.write(json.dumps({"date": now_time[0:3]}, indent=2, ensure_ascii=False))
+                            data.log.get_logger().info(f"创建新文件成功！错误: \n{e}")
+                        with open(f"files/commands/good-morning.json", "r") as file:
+                            read = json.loads(file.read())
+                            data.log.get_logger().info(f"读取成功！info: {read}")
+
+                    if read['date'] == list(now_time[0:3]):  # 第二天重置时间
+                        data.log.get_logger().info("不是第二天")
+                    else:
+                        with open(f"files/commands/good-morning.json", "w") as file:
+                            file.write(json.dumps({"date": now_time[0:3]}, indent=2, ensure_ascii=False))
+                            data.log.get_logger().info("在第二天覆写文件成功！")
+                        with open(f"files/commands/good-morning.json", "r") as file:
+                            read = json.loads(file.read())
+                            data.log.get_logger().info(read)
+
+                    if not read.get("group"):
+                        with open(f"files/commands/good-morning.json", "r") as file:
+                            read = json.loads(file.read())
+                        with open(f"files/commands/good-morning.json", "w") as file:
+                            read.update({"group": {}})
+                            file.write(json.dumps(read, indent=2, ensure_ascii=False))
+                            data.log.get_logger().info(f"初始化group组成功！")
+                        with open(f"files/commands/good-morning.json", "r") as file:
+                            read = json.loads(file.read())
+                            data.log.get_logger().info(read)
+
+                    group_id = str(self.group_id)
+
+                    if group_id not in read.get("group"):
+                        with open(f"files/commands/good-morning.json", "r") as file:
+                            read = json.loads(file.read())
+                        with open(f"files/commands/good-morning.json", "w") as file:
+                            if self.group_id not in read.get("group"):
+                                read['group'].update({self.group_id: []})
+                                file.write(json.dumps(read, indent=2, ensure_ascii=False))
+                                data.log.get_logger().info(f"群组 {self.group_id} 初始化成功")
+
+                    with open(f"files/commands/good-morning.json", "r") as file:
+                        read = json.loads(file.read())
+                    with open(f"files/commands/good-morning.json", "w") as file:
+                        if self.user_id not in read['group'][group_id]:
+                            if len(read['group'][group_id]) == 0:
+                                ret = f"早哇~你是今天群里最早问早的喵~"
+                            else:
+                                ret = f"早~你是今天第 {len(read['group'][group_id]) + 1} 个问早的~"
+                            api.gocqhttp.send_group_msg(self.group_id, ret)
+                            read['group'][group_id].append(self.user_id)
+                        else:
+                            api.gocqhttp.send_group_msg(self.group_id, f"[CQ:at,qq={self.user_id}]，你今天问过早啦~")
+                        file.write(json.dumps(read, indent=2, ensure_ascii=False))
+
+                    repeat = False
+
+                # 复读！
+                if repeat:
+                    if self.user_id == self.__group_msg_cache_1[self.group_id]['id']:
+                        api.gocqhttp.send_group_msg(self.group_id, "刷屏打咩喵！！")
+                        self.__group_msg_cache_1[self.group_id]['id'] = self.self_id
+
+                    else:
+                        api.gocqhttp.send_group_msg(self.group_id, self.message)
 
     def reply_send(self):
         """
         发送回复消息
         :return:
         """
-        if len(self.reply) <= 0:
-            return
+        try:
+            if len(self.reply) <= 0:
+                return
+        except TypeError:
+            pass
         if self.is_group_message():
             api.gocqhttp.send_group_msg(self.group_id, self.reply)
         elif self.is_private_message():

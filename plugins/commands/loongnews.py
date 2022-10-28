@@ -155,7 +155,7 @@ def run(message: Message) -> str:
 
     # 订阅检查
     status = uid in subset
-    ans = """龙芯开源社区新闻：
+    ans = """:: 龙芯开源社区新闻：
 sub 订阅
 unsub 取消订阅"""
     if status:

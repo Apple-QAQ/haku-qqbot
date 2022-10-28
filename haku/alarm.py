@@ -5,16 +5,16 @@
 
 用法：
     实例化: Alarm(alarm_duration, heart_beat_enable, callback)
-            callback 为接收到 SIGALRM 时的回调
-            允许重复配置，但是重复配置会导致一些参数被重置
+        callback 为接收到 SIGALRM 时的回调
+        允许重复配置，但是重复配置会导致一些参数被重置
     获取实例: alarm = Alarm()
     配置 SIGALRM 间隔: alarm.set_duration(duration)
-            duration 为间隔的秒数
+        duration 为间隔的秒数
     新心跳包传入: alarm.new_heart_beat(duration)
-            duration 为心跳包的间隔
+        duration 为心跳包的间隔
     心跳包是否过期: expired = alarm.heart_beat_expired()
     回调线程是否堆积: piled_up = alarm.thread_piled_up()
-            允许同时存在的线程个数由 __thread_list_warn_len 设置
+        允许同时存在的线程个数由 __thread_list_warn_len 设置
 """
 import signal
 import threading
@@ -96,10 +96,10 @@ class Alarm(object):
             data.log.get_logger().debug(f'SIGALRM thread count: {len(self.__thread_list)}')
         # 线程过多上报 由于多每秒一次 SIGALRM 所以线程数应该比较少
         if self.thread_piled_up():
-            warn_msg = f'Thread in class Alarm piled up: thread count {len(self.__thread_list)}'
-            data.log.get_logger().warning(f'In alarm.py: {warn_msg}')
             if self.__thread_piled_up_warn_delay <= 0:
                 self.__thread_piled_up_warn_delay = self.__warn_delay
+                warn_msg = f'Thread in class Alarm piled up: thread count {len(self.__thread_list)}'
+                data.log.get_logger().warning(f'Send report: {warn_msg}')
                 haku.report.report_send(warn_msg)
             else:
                 self.__thread_piled_up_warn_delay -= self.__duration

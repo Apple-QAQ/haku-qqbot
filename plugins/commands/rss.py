@@ -227,10 +227,10 @@ def run(message: Message):
         config()
     help_msg = 'rss 推送\n' \
                '用法：\n' \
-               '    rss list\n' \
-               '    rss add <link>\n' \
-               '    rss del <index>\n' \
-               '    rss status'
+               '    .rss list\n' \
+               '    .rss add <link>\n' \
+               '    .rss del <index>\n' \
+               '    .rss status'
 
     msg_list = message.message.split()
     msg_len = len(msg_list)

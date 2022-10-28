@@ -10,8 +10,18 @@ def config():
 
 
 def run(message) -> str:
-    data.log.get_logger().debug('run ping.run(message)')
-    return 'pong!'
+    meg = message.message.split()[1:]
+    end = ''
+    for i in meg:
+        if i == " ":
+            pass
+        else:
+            end += i
+    if end != '':
+        return '猫猫认为.ping不需要跟随参数的说~'
+    else:
+        data.log.get_logger().debug('run ping.run(message)')
+        return 'pong!'
 
 
 def bye():

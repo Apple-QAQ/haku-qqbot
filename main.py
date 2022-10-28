@@ -19,7 +19,14 @@ from handlers.misc import Misc
 from haku.bot import Bot
 from haku.alarm import Alarm
 
-version = 'v0.0.3'
+version = 'v0.0.2'
+path = os.path.normpath(os.path.dirname(__file__) + "/files/commands/")
+
+if not os.path.exists(path) and os.path.isdir(os.path.normpath(os.path.dirname(__file__) + "/files/")):
+    print('无此目录:', path)
+    os.mkdir(path, 0o755)
+    print("完成创建")
+
 bot = Bot(os.path.dirname(__file__))
 can_run = bot.configure()
 stop_flag = False
@@ -28,6 +35,7 @@ bot_pid = os.getpid()
 
 __flask_threads: List[threading.Thread] = []
 __flask_thread_max = 100
+
 
 if can_run:
     logger = data.log.get_logger()
@@ -209,7 +217,6 @@ if __name__ == '__main__':
     if can_run:
         signal.signal(signal.SIGINT, __signal_sigint_handler)
         alarm = Alarm(1, True, Schedule().handle)
-        haku.report.report_gotify('小白开始工作', '成功完成配置')
         bot.run()
     else:
         print('初始化不成功', file=sys.stderr)

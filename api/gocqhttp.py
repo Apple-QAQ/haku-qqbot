@@ -3,7 +3,6 @@ go-cqhttp api
 原始文档 https://docs.go-cqhttp.org/api/ 或 https://github.com/ishkong/go-cqhttp-docs
 cqcode 文档 https://docs.go-cqhttp.org/cqcode/
 TODO: fix api bug 添加一些 cqcode 函数
-
 用法：
     初始化 api : cqhttp_init(url, token)
             url 为 go-cqhttp 上报地址， token 为上报口令
@@ -254,7 +253,7 @@ def group_ban(group_id: int, user_id: int, duration: int) -> int:
 
 def group_ban_cancel(group_id: int, user_id: int) -> int:
     """
-    群组单人禁言
+    群组单人解禁
     :param group_id: 群号
     :param user_id: 要解除禁言的 qq 号
     :return: http 状态码

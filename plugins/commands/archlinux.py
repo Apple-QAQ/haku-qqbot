@@ -1,7 +1,6 @@
 """
 Archlinux 包查询
 """
-
 import requests
 import re
 from handlers.message import Message
@@ -20,7 +19,7 @@ def search_arch(keywords: str) -> str:
     try:
         res = requests.get(url=baseurl+searchurl, params=params, timeout=20)
     except requests.exceptions.ReadTimeout:
-        return 'Search timeout.'
+        return '→ 呜呜呜，查询超时了，一定不是猫猫的错！请再试试看~'
 
     if res.status_code == 200:
         restexts = res.text.split()
@@ -32,9 +31,9 @@ def search_arch(keywords: str) -> str:
 
         hits = re.findall(r'<table class="results">(.*?)</table>', restext, flags=0)
         if len(hits) == 0:
-            return 'No search result.'
+            return f"→ 坏坏诶！猫猫没有找到你说的包！呜呜呜~"
         hits = re.findall(r'<tr>(.*?)</tr>', hits[0], flags=0)
-        result = 'Search Result(s):'
+        result = '→ 诶嘿，猫猫找到惹！在下面在下面 ↓\n'
         for i in range(min(5, len(hits))):
             if i == 0:
                 continue
@@ -59,18 +58,26 @@ def search_arch(keywords: str) -> str:
                         pkg[k] = pkg[k].replace(s, '')
                 search_res.append(pkg)
         if len(search_res) == 0:
-            return 'No search result.'
+            return f"坏坏诶！猫猫没有找到你说的包！呜呜呜~"
         for rs in search_res:
-            result += f"\nPackage {rs['name']} {rs['version']}\n{rs['arch']} {rs['repo']}\n"\
-                      f"{rs['description']}\n{rs['link']}"
+            result += f"\n" \
+                      f"包名:  {rs['name']}\n" \
+                      f"版本号:  {rs['version']}\n" \
+                      f"架构:  {rs['arch']}\n" \
+                      f"软件源:  {rs['repo']}\n"\
+                      f"-----------------简介-----------------\n" \
+                      f"{rs['description']}\n" \
+                      f"--------------------------------------\n" \
+                      f"链接:\n{rs['link']}\n"
         return result
     else:
-        return 'Archlinux server error.'
+        return '→ 啊咧~是服务器炸了，不关猫猫的事！'
 
 
 def run(message: Message) -> str:
     req = list(message.raw_message.strip().split(' ', 1))
-    helpmsg = 'Archlinux 包查询'
+    helpmsg = ':: Archlinux 包查询(仅官方源)\n' \
+              '    .archlinux <packname>'
     if len(req) > 1:
         keywords = req[1].strip()
         return search_arch(keywords)

@@ -7,12 +7,12 @@ def run(message: Message):
     cmd = message.message.split()
     help_msg = '设置定时任务\n' \
                '用法：\n' \
-               '    schedules add time <hhmm> <message>\n' \
-               '    schedules add date <MMdd> <message>\n' \
-               '    schedules list time\n' \
-               '    schedules list date\n' \
-               '    schedules del time <index>\n' \
-               '    schedules del date <index>'
+               '    .schedules add time <hhmm> <message>\n' \
+               '    .schedules add date <MMdd> <message>\n' \
+               '    .schedules list time\n' \
+               '    .schedules list date\n' \
+               '    .schedules del time <index>\n' \
+               '    .schedules del date <index>'
 
     ans = help_msg
     cmd_len = len(cmd)
