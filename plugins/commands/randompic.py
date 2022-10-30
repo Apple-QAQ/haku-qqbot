@@ -20,4 +20,8 @@ def run(message) -> str:
         elif meg[0] == "pic" or meg[0] == "picture":
             return url[1]
         else:
-            return url[rand]
+            return ":: 随机图片\n" \
+                   "    .randompic → 使用随机 Api\n" \
+                   "    .randompic loli → 使用以前 .loli 的 Api\n" \
+                   "    .randompic pic\n" \
+                   "    .randompic picture → 使用 https://iw233.cn/ 提供的 Api"
