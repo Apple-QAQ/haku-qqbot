@@ -2,11 +2,13 @@
 回声洞(cave)
 """
 import json
+import time
 from random import randint
 
 from api import gocqhttp
 
 file_dir = "files/commands/cave.json"
+timer = 0
 
 
 def __new_cave(number, group_id, user_id, text) -> dict:
@@ -47,6 +49,10 @@ def __nick_name(user_id):
 
 
 def run(message):
+    global timer
+    if timer != 0:
+        return f"⇒ 啊呜~再弄的话就要坏掉惹，请等待 {timer} 秒再试吧！"
+
     if message.is_private_message():
         return "⇒ 请在群组内使用此命令"
     commands = message.message.split(" ")[1:]
@@ -94,4 +100,10 @@ def run(message):
               "    .cave many\n" \
               "    .cave quantity → 查看回声洞消息数量"
 
-    return ret
+    gocqhttp.send_group_msg(group_id=message.group_id, message=ret)
+
+    timer = 10
+
+    while timer != 0:
+        timer -= 1
+        time.sleep(1)
