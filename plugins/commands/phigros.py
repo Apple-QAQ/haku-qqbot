@@ -1,6 +1,8 @@
-import requests
-import data.log
 import re
+
+import requests
+
+import data.log
 
 url_update = "https://www.taptap.com/webapiv2/apk/v1/list-by-app?app_id=165287&X-UA=V%3D1%26PN%3DWebApp%26LANG" \
              "%3Dzh_CN%26VN_CODE%3D76%26VN%3D0.1.0%26LOC%3DCN%26PLT%3DPC%26DS%3DAndroid%26UID%3Dfac371ef-3822-44f6" \

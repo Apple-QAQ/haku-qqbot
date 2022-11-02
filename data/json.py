@@ -11,9 +11,9 @@ json 文件读取写入和检测是否存在
     写入 json 文件 : json_write_file(file, content)
                 file 为文件名， content 为内容字典
 """
+import json
 import os
 import sys
-import json
 
 __json_path: str
 

@@ -1,13 +1,13 @@
 import calendar
 import time
-import requests
-import feedparser
 from typing import Dict
 
-import data.sqlite
-import api.gocqhttp
-from handlers.message import Message
+import feedparser
+import requests
 
+import api.gocqhttp
+import data.sqlite
+from handlers.message import Message
 
 __db_name = 'commands.rss.db'
 __rss_group: Dict[str, set] = {}
@@ -153,7 +153,7 @@ def __get(msg_type: str, qid: int) -> str:
     else:
         ans = '小白这里没有你的记录诶'
     for i in range(len(url_lst)):
-        ans += f'\n{i+1} {url_lst[i]}'
+        ans += f'\n{i + 1} {url_lst[i]}'
     return ans
 
 
@@ -223,7 +223,7 @@ def config():
 
 
 def run(message: Message):
-    if time.time() - __last_sync > 50*60.0:
+    if time.time() - __last_sync > 50 * 60.0:
         config()
     help_msg = 'rss 推送\n' \
                '用法：\n' \

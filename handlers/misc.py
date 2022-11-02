@@ -8,6 +8,7 @@ class Misc:
     """
     杂项类
     """
+
     def __init__(self, misc_type: str, sub_type: str, user_id: int):
         self.misc_type = misc_type
         self.sub_type = sub_type

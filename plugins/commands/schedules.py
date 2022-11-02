@@ -1,4 +1,3 @@
-
 from handlers.message import Message
 from handlers.schedule import Schedule
 
@@ -69,14 +68,14 @@ def run(message: Message):
                 r_cmd = message.message.split(maxsplit=4)
                 if cmd[2] == 'time':
                     if schedule.schedule_add_by_time(message.message_type, message.user_id, message.group_id,
-                                                     tag//100, tag % 100, r_cmd[4]):
-                        ans = f'添加成功 {tag//100}时{tag % 100}分 {r_cmd[4]}'
+                                                     tag // 100, tag % 100, r_cmd[4]):
+                        ans = f'添加成功 {tag // 100}时{tag % 100}分 {r_cmd[4]}'
                     else:
                         ans = '添加失败'
                 elif cmd[2] == 'date':
                     if schedule.schedule_add_by_date(message.message_type, message.user_id, message.group_id,
-                                                     tag//100, tag % 100, r_cmd[4]):
-                        ans = f'添加成功{tag//100}月{tag % 100}日 {r_cmd[4]}'
+                                                     tag // 100, tag % 100, r_cmd[4]):
+                        ans = f'添加成功{tag // 100}月{tag % 100}日 {r_cmd[4]}'
                     else:
                         ans = '添加失败'
     return ans

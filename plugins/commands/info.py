@@ -1,9 +1,10 @@
 """
 机器人服务器信息
 """
-import psutil
 import shutil
 import time
+
+import psutil
 
 
 # api util:

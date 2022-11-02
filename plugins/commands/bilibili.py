@@ -1,16 +1,16 @@
 import re
+import time
 
 import bilibili_api
 import bilibili_api.app
 
 import data.log
-import time
 
 verify = bilibili_api.Verify(
-            sessdata="fb3beb5a%2C1673250422%2Caf711%2A71",
-            buvid3="0F85A2BA-D857-CA43-75E8-1BF6F8EB479B32985infoc",
-            csrf="771967e186514f37594ec529cf19de56",
-        )
+    sessdata="fb3beb5a%2C1673250422%2Caf711%2A71",
+    buvid3="0F85A2BA-D857-CA43-75E8-1BF6F8EB479B32985infoc",
+    csrf="771967e186514f37594ec529cf19de56",
+)
 
 
 def b23tv_to_bv(url):
@@ -62,7 +62,7 @@ class GetVideo:
         av_id = f"AV{self.info['aid']}"
         title = self.info['title']
         picture = self.info['pic']
-        video_time = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(self.info['pubdate']+28800))
+        video_time = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(self.info['pubdate'] + 28800))
         up = self.info["owner"]['name']
         viewer = self.info["stat"]["view"]
         danmaku = self.info["stat"]["danmaku"]

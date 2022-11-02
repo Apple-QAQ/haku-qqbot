@@ -12,11 +12,12 @@ hakuBot 主体
     获取 Flask 对象: obj = bot.get_flask_obj()
 """
 import sys
+
 import flask
 
-import haku.config
-import haku.cache
 import haku.alarm
+import haku.cache
+import haku.config
 import handlers.message
 
 

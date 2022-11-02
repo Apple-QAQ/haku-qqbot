@@ -13,11 +13,10 @@ import flask
 
 import data.log
 import haku.report
+from haku.alarm import Alarm
+from haku.bot import Bot
 from handlers.message import Message
 from handlers.schedule import Schedule
-from handlers.misc import Misc
-from haku.bot import Bot
-from haku.alarm import Alarm
 
 version = 'v0.0.2'
 path = os.path.normpath(os.path.dirname(__file__) + "/files/commands/")
@@ -35,7 +34,6 @@ bot_pid = os.getpid()
 
 __flask_threads: List[threading.Thread] = []
 __flask_thread_max = 100
-
 
 if can_run:
     logger = data.log.get_logger()
@@ -204,7 +202,7 @@ def stop_bot() -> str:
     stop_flag = True
     bot.stop()
     delay_sec = 5
-    threading.Thread(target=__quitter, args=(delay_sec, ), daemon=True).start()
+    threading.Thread(target=__quitter, args=(delay_sec,), daemon=True).start()
     return 'stop'
 
 

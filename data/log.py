@@ -8,10 +8,10 @@
                 配置在 __log_config 中
     获取日志记录器 Logger 对象: get_logger()
 """
-import os
-import sys
 import logging
 import logging.config
+import os
+import sys
 
 __all__ = ['get_logger', 'log_set_config']
 

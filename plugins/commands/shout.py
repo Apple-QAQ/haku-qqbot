@@ -1,7 +1,8 @@
+import random
+import time
+
 import api.gocqhttp
 import data.log
-import time
-import random
 
 
 def run(message):
@@ -20,9 +21,10 @@ def run(message):
     for i in api.gocqhttp.get_group_list()[1]["data"]:
         already_join_group_list += [i["group_id"]]
 
-    api.gocqhttp.send_private_msg(user_id=message.user_id, message=f"⇒ 请等待 60 秒，如果有改变请迅速前往服务器关闭进程并重启！\n\n"
-                                                                   f"消息为:\n"
-                                                                   f"{send_message}")
+    api.gocqhttp.send_private_msg(user_id=message.user_id,
+                                  message=f"⇒ 请等待 60 秒，如果有改变请迅速前往服务器关闭进程并重启！\n\n"
+                                          f"消息为:\n"
+                                          f"{send_message}")
 
     time.sleep(60)
     api.gocqhttp.send_private_msg(user_id=message.user_id, message="⇒ 开始发送")

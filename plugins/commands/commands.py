@@ -29,7 +29,7 @@ def run(message: Message):
             is_empty = True
             ans = '指令列表'
             for i in range(len(lst)):
-                ans += f'\n{i+1} {lst[i]["command"]} {lst[i]["interval"]} {lst[i].get("user_id", "")}'
+                ans += f'\n{i + 1} {lst[i]["command"]} {lst[i]["interval"]} {lst[i].get("user_id", "")}'
                 is_empty = False
             if is_empty:
                 ans = '嘛~没有命令被设置呢~'

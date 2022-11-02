@@ -13,12 +13,13 @@
 """
 import os
 import sys
-import yaml
 from typing import List
 
+import yaml
+
 import api.gocqhttp
-import data.log
 import data.json
+import data.log
 import data.sqlite
 import haku.report
 

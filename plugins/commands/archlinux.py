@@ -1,8 +1,10 @@
 """
 Archlinux 包查询
 """
-import requests
 import re
+
+import requests
+
 from handlers.message import Message
 
 
@@ -17,7 +19,7 @@ def search_arch(keywords: str) -> str:
     }
 
     try:
-        res = requests.get(url=baseurl+searchurl, params=params, timeout=20)
+        res = requests.get(url=baseurl + searchurl, params=params, timeout=20)
     except requests.exceptions.ReadTimeout:
         return '→ 呜呜呜，查询超时了，一定不是猫猫的错！请再试试看~'
 
@@ -43,7 +45,7 @@ def search_arch(keywords: str) -> str:
                     'arch': re.findall(r'<td>(.*?)</td>', p[0], flags=0)[0],
                     'repo': re.findall(r'<td>(.*?)</td>', p[1], flags=0)[0],
                     'name': re.findall(r'">(.*?)</a></td>', p[2], flags=0)[0],
-                    'link': baseurl+re.findall(r'href="(.*?)"', p[2], flags=0)[0],
+                    'link': baseurl + re.findall(r'href="(.*?)"', p[2], flags=0)[0],
                     'version': re.findall(r'<td>(.*?)</td>', p[3], flags=0)[0],
                     'description': re.findall(r'">(.*?)</td>', p[4], flags=0)[0],
                     'lastupdate': re.findall(r'<td>(.*?)</td>', p[5], flags=0)[0],
@@ -64,7 +66,7 @@ def search_arch(keywords: str) -> str:
                       f"包名:  {rs['name']}\n" \
                       f"版本号:  {rs['version']}\n" \
                       f"架构:  {rs['arch']}\n" \
-                      f"软件源:  {rs['repo']}\n"\
+                      f"软件源:  {rs['repo']}\n" \
                       f"-----------------简介-----------------\n" \
                       f"{rs['description']}\n" \
                       f"--------------------------------------\n" \

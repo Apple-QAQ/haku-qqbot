@@ -1,8 +1,9 @@
 """
 一言
 """
-import requests
 import json
+
+import requests
 
 import data.log
 from handlers.message import Message

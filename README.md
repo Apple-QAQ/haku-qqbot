@@ -21,38 +21,38 @@ message 消息 alarm 定时消息 misc 杂项消息
 ### 项目结构
 
 + haku
-  + core.py
-  + report.py
-  + config.py
-  + plugin.py
-  + cache.py
-  + frontend.py
+    + core.py
+    + report.py
+    + config.py
+    + plugin.py
+    + cache.py
+    + frontend.py
 + api
-  + gocqhttp.py
+    + gocqhttp.py
 + data
-  + sqlite.py
-  + json.py
-  + log.py
+    + sqlite.py
+    + json.py
+    + log.py
 + handlers
-  + message.py
-  + alarm.py
-  + misc.py
+    + message.py
+    + alarm.py
+    + misc.py
 + plugins
-  + commands
-    + some_plugins.py
+    + commands
+        + some_plugins.py
 + main.py
 
 ### 目录结构
 
 + files
-  + sqlite
-    + some.db
-  + json
-    + some.json
-  + log
-    + some.txt
-  + config.yaml
+    + sqlite
+        + some.db
+    + json
+        + some.json
+    + log
+        + some.txt
+    + config.yaml
 + libs
-  + go-cqhttp
     + go-cqhttp
-    + device.json
+        + go-cqhttp
+        + device.json

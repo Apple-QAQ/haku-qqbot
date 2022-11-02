@@ -2,8 +2,9 @@
 Ubuntu 包查询
 """
 
-import requests
 import re
+
+import requests
 
 from handlers.message import Message
 
@@ -20,7 +21,7 @@ def __search_ubuntu(keywords):
     }
 
     try:
-        res = requests.get(url=baseurl+searchurl, params=params, timeout=20)
+        res = requests.get(url=baseurl + searchurl, params=params, timeout=20)
     except requests.exceptions.ReadTimeout:
         return '呜呜呜，查询超时了，一定不是猫猫的错！请再试试看~'
 

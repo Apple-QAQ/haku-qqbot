@@ -2,6 +2,7 @@
 查询群聊问早情况
 """
 import json
+
 from api import gocqhttp
 
 HELP_MSG = ":: 查询群聊问早情况\n" \

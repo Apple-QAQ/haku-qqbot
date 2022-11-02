@@ -1,11 +1,12 @@
 """
 查询天气（和风天气api）
 """
-import requests
 import json
 
-import haku.config
+import requests
+
 import data.log
+import haku.config
 from handlers.message import Message
 
 HEKEY = haku.config.Config().get_key('hefeng_weather')

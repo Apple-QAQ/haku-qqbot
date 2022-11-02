@@ -1,7 +1,7 @@
+import re
+import time
 
 import requests
-import time
-import re
 
 import api.gocqhttp
 import data.log
@@ -102,10 +102,10 @@ def __refresh_and_send():
     db = data.sqlite.sqlite_open_db(database)
     cursor = db.cursor()
     for s in news:
-        cursor.execute('SELECT content FROM news WHERE content=?;', (s, ))
+        cursor.execute('SELECT content FROM news WHERE content=?;', (s,))
         if len(cursor.fetchall()) == 0:
             post_news.append(s)
-            cursor.execute('INSERT INTO news(content) values(?)', (s, ))
+            cursor.execute('INSERT INTO news(content) values(?)', (s,))
     cursor.close()
     data.sqlite.sqlite_close_db(db)
     # print(post_news)
@@ -167,10 +167,10 @@ unsub 取消订阅"""
         cursor = db.cursor()
         if comm[1] == 'sub' and not status:
             subset.add(uid)
-            cursor.execute('INSERT INTO ids(id) values(?)', (uid, ))
+            cursor.execute('INSERT INTO ids(id) values(?)', (uid,))
         elif comm[1] == 'unsub' and status:
             subset.remove(uid)
-            cursor.execute('DELETE FROM ids WHERE id=?', (uid, ))
+            cursor.execute('DELETE FROM ids WHERE id=?', (uid,))
         cursor.close()
         data.sqlite.sqlite_close_db(db)
         ans = '汝的操作成功执行'

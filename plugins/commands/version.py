@@ -36,7 +36,7 @@ def run(message) -> str:
                 haku_bot_ver = '获取版本号失败'
 
         return \
-f'''机器人的名字是 {haku.config.Config().get_bot_name()} 的说~
+            f'''机器人的名字是 {haku.config.Config().get_bot_name()} 的说~
 haku_bot 框架底层版本号：{haku_bot_ver}
 bot 开发者: [CQ:at,qq=3034582021]
 机器人的主人是[CQ:at,qq=[CQ:at,qq={haku.config.Config().get_admin_qq_list()[0]}]

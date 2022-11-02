@@ -12,8 +12,8 @@ sqlite3 数据库处理
                 会再次调用 conn.commit() 来保证更改的提交
 """
 import os
-import sys
 import sqlite3
+import sys
 
 __sqlite_path: str
 

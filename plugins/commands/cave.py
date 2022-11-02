@@ -1,9 +1,10 @@
 """
 回声洞(cave)
 """
-from random import randint
-from api import gocqhttp
 import json
+from random import randint
+
+from api import gocqhttp
 
 file_dir = "files/commands/cave.json"
 

@@ -15,8 +15,8 @@ TODO: 由于当前是一次性读取所有缓存，可以改成需要该表且 s
 import sqlite3
 from typing import Dict
 
-import data.sqlite
 import data.log
+import data.sqlite
 
 
 class Cache(object):
@@ -52,7 +52,7 @@ class Cache(object):
             memcur = memdb.cursor()
             memcur.execute(table[1])
             title_len = len(cur.execute(f'PRAGMA table_info(\'{table[0]}\');').fetchall())
-            insert_com = f'INSERT INTO {table[1]} VALUES({("?,"*title_len)[:-1]});'
+            insert_com = f'INSERT INTO {table[1]} VALUES({("?," * title_len)[:-1]});'
             # 拷贝所有数据
             for row in cur.execute(f'SELECT * FROM {table[0]};'):
                 memcur.execute(insert_com, row)

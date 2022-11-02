@@ -121,7 +121,7 @@ def run(message):
 
         return f"→ 绑定成功！\n" \
                f"账号昵称: {arcaea.get_user_info(arcaea_id)[-1]['content']['account_info']['name']}" \
-               if ret[0] else "⇒ 未知错误"
+            if ret[0] else "⇒ 未知错误"
 
     elif first_command == "UNBIND":
         if not already_bind[0]:
@@ -130,7 +130,7 @@ def run(message):
         return f"→ 已解绑!\n" \
                f"账号id: {format_arcaea_id(ret[-1])}\n" \
                f"账号昵称: {arcaea.get_user_info(ret[-1])[-1]['content']['account_info']['name']}" \
-               if ret[0] else "⇒ 未知错误"
+            if ret[0] else "⇒ 未知错误"
 
     elif first_command == "SONG":
         search = " ".join(command[1:])

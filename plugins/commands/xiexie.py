@@ -24,5 +24,5 @@ def run(message):
         return '猫猫认为.xiexie不需要跟随参数的说~'
     else:
         lst = string.split(" ")
-        where = random.randint(0, len(lst)-1)
+        where = random.randint(0, len(lst) - 1)
         return lst[where]

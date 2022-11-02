@@ -2,11 +2,10 @@
 骰子(随机数)
 """
 
+import re
 from random import randint
 
 import data.log
-
-import re
 
 help_msg = ":: 投骰子\n" \
            "    .roll <from>,<to> → 投骰子(从 from 到 to 的范围中选一个随机数)\n" \

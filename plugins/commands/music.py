@@ -3,8 +3,8 @@
 """
 import requests
 
-import data.log
 import api.gocqhttp
+import data.log
 from handlers.message import Message
 
 URL = 'https://api.inuyasha.love/netease-cloud-music/search'
@@ -86,7 +86,7 @@ def run(message: Message) -> str:
                                 break
 
                         ret_list_info += "\n\n请输入: “.music 序号 您前面所输入的搜索内容”(推荐) 或者 “.music 序号”(不推荐)进行具体推送" \
-                                if message.message_type == "group" else "\n\n请输入: “.music 序号 您前面所输入的搜索内容” 进行具体推送"
+                            if message.message_type == "group" else "\n\n请输入: “.music 序号 您前面所输入的搜索内容” 进行具体推送"
                         ans = ret_list_info
                     else:
                         ans = '⇒ 网易云里没有诶~'

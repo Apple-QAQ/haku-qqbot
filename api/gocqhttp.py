@@ -8,12 +8,13 @@ TODO: fix api bug 添加一些 cqcode 函数
             url 为 go-cqhttp 上报地址， token 为上报口令
     调用 api : 查看代码
 """
-import requests
+import os
 import re
 import sys
-import os
 import traceback
 from typing import Union, List
+
+import requests
 
 import data.log
 

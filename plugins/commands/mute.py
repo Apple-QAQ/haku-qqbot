@@ -75,7 +75,7 @@ def run(message):
                    f"用户: {mute_qq_id}"
     except IndexError:
         duration = 60
-    api.gocqhttp.group_ban(group_id=message.group_id, user_id=mute_qq_id, duration=duration*60)
+    api.gocqhttp.group_ban(group_id=message.group_id, user_id=mute_qq_id, duration=duration * 60)
     return f":: 禁言成功\n" \
            f"用户: {mute_qq_id}\n" \
            f"时长: {duration} 分钟"
