@@ -74,7 +74,7 @@ def run(message):
               f"\n" \
               f"{random_cave['text']}\n" \
               f"\n" \
-              f"      —— 来自群组 {__group_name(random_cave['group_id'])}" \
+              f"      —— 来自群组 {__secrecy(__group_name(random_cave['group_id']))}" \
               f"({__secrecy(str(random_cave['group_id']))}) 的 {__nick_name(random_cave['user_id'])}" \
               f"({__secrecy(str(random_cave['user_id']))})"
     elif commands[0] == "many" or commands[0] == "much":
