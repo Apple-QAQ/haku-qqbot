@@ -30,6 +30,8 @@ def run(message: Message) -> str:
                 msc_id = past[message.group_id][-1]['result']['songs'][req[0]]['id']
                 api.gocqhttp.send_group_msg(message.group_id, "嘛~你的后面没跟东西嘛，那就用上次的查询吧~")
                 api.gocqhttp.send_group_share_music(message.group_id, '163', msc_id)
+                api.gocqhttp.send_group_msg(message.group_id,
+                                            f"[CQ:record,file=https://music.163.com/song/media/outer/url?id={msc_id}]")
                 return ""
             elif len(req) == 1 and message.message_type == "private":
                 return ans
@@ -44,8 +46,16 @@ def run(message: Message) -> str:
                     msc_id = rejson['result']['songs'][req[0]]['id']
                     if message.message_type == 'group':
                         api.gocqhttp.send_group_share_music(message.group_id, '163', msc_id)
+                        api.gocqhttp.send_group_msg(
+                            message.group_id,
+                            f"[CQ:record,file=https://music.163.com/song/media/outer/url?id={msc_id}]"
+                        )
                     elif message.message_type == 'private':
                         api.gocqhttp.send_private_share_music(message.user_id, '163', msc_id)
+                        api.gocqhttp.send_private_msg(
+                            message.user_id,
+                            f"[CQ:record,file=https://music.163.com/song/media/outer/url?id={msc_id}]"
+                        )
                     return ""
                 else:
                     ans = '⇒ 好像返回了奇怪的东西: ' + str(resp.status_code)
