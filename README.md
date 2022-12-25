@@ -1,5 +1,7 @@
 # haku bot
 
+> 本分支现已停止维护，感谢大家半年来的陪伴
+
 这是原 [py-hakuBot](https://github.com/weilinfox/py-hakuBot) 的重构的第三方改写~，但并没有达到它的完善程度
 
 日志 flask
