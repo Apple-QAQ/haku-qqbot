@@ -27,11 +27,13 @@ def run(message):
             return "→ 群内还没有问早过哦~请发送 '早' 试试看吧！"
 
         ret = "→ 群内问早排名:"
+
         for index, user in enumerate(morning[str(message.group_id)]):
             index += 1
             ret += f"\n{str(index).rjust(2, '0')} | {__nick_name(user)} ({user})"
-            if index == 11:
+            if index == 10:
                 ret += f"\n11 | ... (仅显示前10个问早的用户)"
+                break
 
         return ret
     except:

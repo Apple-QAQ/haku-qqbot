@@ -3,4 +3,6 @@ files/
 .idea/
 */__pycache__/
 */*/__pycache__/
-cqhttp
+.gitignore
+venv
+hakuBot.service

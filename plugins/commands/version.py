@@ -39,7 +39,7 @@ def run(message) -> str:
             f'''机器人的名字是 {haku.config.Config().get_bot_name()} 的说~
 haku_bot 框架底层版本号：{haku_bot_ver}
 bot 开发者: [CQ:at,qq=3034582021]
-机器人的主人是[CQ:at,qq=[CQ:at,qq={haku.config.Config().get_admin_qq_list()[0]}]
+机器人的主人是[CQ:at,qq={haku.config.Config().get_admin_qq_list()[0]}]
 
 bot开发者的Github: 
     https://github.com/apple-qaq/

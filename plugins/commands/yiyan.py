@@ -12,7 +12,7 @@ myLogger = data.log.get_logger()
 
 
 def run(message: Message) -> str:
-    help_msg = '传入参数，猫猫会搜索以下五个类别的说~\na 动画, b 漫画\nc 文学, d 哲学\ne 诗词, f 随机(没写)'
+    help_msg = '传入参数，猫猫会搜索以下五个类别的说~\na 动画, b 漫画\nc 文学, d 哲学\ne 诗词'
     req = list(message.raw_message.split(' ', 1))
     if len(req) > 1:
         req[1] = req[1].strip()
@@ -28,10 +28,7 @@ def run(message: Message) -> str:
             params = {'c': 'k'}
         elif req[1] == 'e':
             params = {'c': 'i'}
-        elif req[1] == 'f':
-            return "不是跟你说了没写么笨蛋！"
         else:
-            ans = '狐狐是我的！谁都不许碰！\nApple_QAQ'
             return ans
 
         try:
@@ -39,7 +36,7 @@ def run(message: Message) -> str:
             if resp.status_code == 200:
                 rejson = json.loads(resp.text)
                 # print(rejson)
-                ans = rejson['hitokoto'] + '\n' + rejson['from']
+                ans = rejson['hitokoto'] + '\n    —— ' + rejson['from']
             else:
                 ans = '好像返回了奇怪的东西: ' + str(resp.status_code)
         except Exception as e:
