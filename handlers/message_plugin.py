@@ -25,7 +25,7 @@ def extract_json(s: str):
 
 
 ###############
-def plugins(self, block_default_config, _repeat):
+def plugins(self, block_default_config):
     # 检测是否因为调用插件而复读
     repeat = False
 
@@ -148,9 +148,7 @@ def plugins(self, block_default_config, _repeat):
                 api.gocqhttp.send_group_msg(self.group_id, f"[CQ:at,qq={self.user_id}]，你今天问过早啦~")
             file.write(json.dumps(read, indent=2, ensure_ascii=False))
             
-    if not _repeat:
-        return
-    elif repeat:
+    if repeat:
         if self.user_id == self.group_msg_cache_1[self.group_id]['id']:
             pass
         else:

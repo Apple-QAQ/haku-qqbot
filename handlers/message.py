@@ -131,14 +131,13 @@ class Message:
 
         if not self.inter_msg:
             # 判断是否调用插件
-            call_plugin = False
-            plugin_name = ''
             load_block_default_config = _load_block_default_config()
-
             black_group = load_block_default_config["black_group"]
-
             data.log.get_logger().info(f"black_group: {black_group}")
 
+            # 判断是否调用插件
+            call_plugin = False
+            plugin_name = ''
             try:
                 index = haku.config.Config().get_index()
                 message_sequence = self.message.split()
@@ -147,27 +146,20 @@ class Message:
                     return
                 com = re.compile(plugin_name_judge)
                 index_len = len(index)
-                if self.is_group_message() and self.group_id in black_group and self.user_id not in \
-                        haku.config.Config().get_admin_qq_list():
-                    call_plugin = False
-                elif com.match(message_sequence[0][index_len:]) is not None and \
-                        message_sequence[0][:index_len] == index:
+                if com.match(message_sequence[0][index_len:]) is not None and message_sequence[0][:index_len] == index:
                     plugin_name = message_sequence[0][1:]
                     call_plugin = True
             except Exception as e:
                 data.log.get_logger().exception(f'RuntimeError while checking message: {e}')
 
-                # 调用插件
-                if call_plugin:
-                    self.can_call = True
-                    plugin = Plugin(plugin_name, self)
-                    code, self.reply = plugin.handle()
-                    # 调用插件则不可能复读
-                    if code == plugin_success_code:
-                        repeat = False
-
-            # 信息处理插件 handlers/message_plugin.py
-            message_plugin.plugins(self=self, _repeat=repeat, block_default_config=load_block_default_config)
+            # 调用插件
+            if call_plugin:
+                self.can_call = True
+                plugin = Plugin(plugin_name, self)
+                code, self.reply = plugin.handle()
+            else:
+                # 信息处理插件 handlers/message_plugin.py
+                message_plugin.plugins(self=self, block_default_config=load_block_default_config)
 
     def reply_send(self):
         """
