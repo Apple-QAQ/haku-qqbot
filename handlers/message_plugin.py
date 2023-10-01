@@ -26,6 +26,9 @@ def extract_json(s: str):
 
 ###############
 def plugins(self, block_default_config):
+    """
+    处理不是 . 开头的命令
+    """
     # 检测是否因为调用插件而复读
     repeat = False
 

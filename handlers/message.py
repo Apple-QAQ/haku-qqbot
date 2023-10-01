@@ -123,9 +123,6 @@ class Message:
         """
         处理消息 判断插件调用 获取插件回复
         """
-
-        repeat = True
-
         if self.message in self.__block_msg:
             return
 
