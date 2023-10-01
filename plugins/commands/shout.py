@@ -43,3 +43,4 @@ def run(message):
 
         api.gocqhttp.send_private_msg(user_id=message.user_id, message="→ 全部发送完毕！！")
         data.log.get_logger().info(f"全部发送完毕\n消息:\n{send_message}")
+        is_send = True
