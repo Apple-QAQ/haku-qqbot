@@ -7,7 +7,7 @@ import api.gocqhttp
 import data.log
 from handlers.message import Message
 
-URL = 'https://api.inuyasha.love/netease-cloud-music/search'
+URL = 'https://mu-api.yuk0.com/search'
 myLogger = data.log.get_logger()
 past = {}
 UA = {
