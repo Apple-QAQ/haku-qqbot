@@ -155,4 +155,4 @@ def plugins(self, block_default_config):
         if self.user_id == self.group_msg_cache_1[self.group_id]['id']:
             pass
         else:
-            api.gocqhttp.send_group_msg(self.group_id, self.message)
+            api.gocqhttp.send_group_msg(self.group_id, self.message) if self.message[0] != "/" else ...
